@@ -1,19 +1,45 @@
-import datetime
-from openpyxl import Workbook
+import datetime, logging
+from openpyxl import Workbook, load_workbook
 
-wb = Workbook()
+from excel.reader import BankExcelReader
 
-# grab the active worksheet
-ws = wb.active
+logging.basicConfig(level=logging.DEBUG)
 
-# Data can be assigned directly to cells
-ws['A1'] = 42
+logger = logging.getLogger(__name__)
 
-# Rows can also be appended
-ws.append([1, 2, 3])
 
-# Python types will automatically be converted
-ws['A2'] = datetime.datetime.now()
+def w_write_tests():
+    wb = Workbook()
+    # grab the active worksheet
+    ws = wb.active
 
-# Save the file
-wb.save("sample.xlsx")
+    # Data can be assigned directly to cells
+    ws['A1'] = 42
+
+    # Rows can also be appended
+    ws.append([1, 2, 3])
+
+    # Python types will automatically be converted
+    ws['A2'] = datetime.datetime.now()
+
+    # Save the file
+    wb.save("sample.xlsx")
+
+def w_read_test():
+    logger.debug("ElSX READ TEST")
+    wb = load_workbook("doc/dat.xlsx", read_only=True)
+
+    for sheet in wb._sheets:
+        logger.debug("Sheet :%s", sheet.title)
+
+    ws = wb['大额交易']
+
+    for row in ws.rows:
+        for cell in row:
+            print(cell.value)
+
+def bank_read():
+    excel_reader = BankExcelReader("doc/dat.xlsx")
+    excel_reader.read()
+
+bank_read()
