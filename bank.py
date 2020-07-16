@@ -1,4 +1,5 @@
-import datetime, logging
+import datetime
+import logging
 from openpyxl import Workbook, load_workbook
 
 from excel.reader import BankExcelReader
@@ -25,6 +26,7 @@ def w_write_tests():
     # Save the file
     wb.save("sample.xlsx")
 
+
 def w_read_test():
     logger.debug("ElSX READ TEST")
     wb = load_workbook("doc/dat.xlsx", read_only=True)
@@ -38,8 +40,11 @@ def w_read_test():
         for cell in row:
             print(cell.value)
 
+
 def bank_read():
     excel_reader = BankExcelReader("doc/dat.xlsx")
     excel_reader.read()
+    excel_reader.write()
+
 
 bank_read()
