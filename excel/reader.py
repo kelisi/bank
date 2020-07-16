@@ -25,9 +25,10 @@ TITLE_SAVING_TRADE_AMOUNT = "大额交易金额"
 TITLE_SAVING_TRADE_TYPE = "大额交易方式"
 TITLE_CREDIT_TRADE_AMOUNT = "信用卡交易金额"
 TITLE_CREDIT_TRADE_TYPE = "信用卡交易方式"
+TITLE_TRADE_DATE_AMOUNT = "当日累计交易额"
 
 FIRST_ROW_WRITE = [TITLE_USER_ID, TITLE_USER_NAME, TITLE_TRADE_DATE, TITLE_SAVING_TRADE_AMOUNT,
-                   TITLE_SAVING_TRADE_TYPE, TITLE_CREDIT_TRADE_AMOUNT, TITLE_CREDIT_TRADE_TYPE]
+                   TITLE_SAVING_TRADE_TYPE, TITLE_CREDIT_TRADE_AMOUNT, TITLE_CREDIT_TRADE_TYPE, TITLE_TRADE_DATE_AMOUNT]
 
 
 class BankExcelReader():
@@ -98,18 +99,25 @@ class BankExcelReader():
 
     def __writeCell(self, sheet, user):
         for time, trade_list in user.tradeInfoDic.items():
-            for trade in trade_list:
+            trade_number = 0
+            for i, trade in enumerate(trade_list):
+                trade_number = trade_number + trade.amount
+                trade_date_amount = None
+
+                if i == len(trade_list)-1:
+                    trade_date_amount = trade_number
+
                 if trade.card_type == CardType.CARD_TYPE_SAVING:
                     sheet.append([user.identityId, user.name, time,
-                                trade.amount, trade.trade_type, None, None])
+                                  trade.amount, trade.trade_type, None, None, trade_date_amount])
                 else:
                     sheet.append([user.identityId, user.name, time, None,
-                                None, trade.amount, trade.trade_type])
+                                  None, trade.amount, trade.trade_type, trade_date_amount])
 
     def write(self):
         # remove before  create merge sheet
-        if SHEET_MERGE_CREATE in self.work_book._sheets:
-            self.work_book.remove_sheet(SHEET_MERGE_CREATE)
+        if SHEET_MERGE_CREATE in self.work_book.sheetnames:
+            del self.work_book[SHEET_MERGE_CREATE]
         merge_sheet = self.work_book.create_sheet(SHEET_MERGE_CREATE)
 
         merge_sheet.append(FIRST_ROW_WRITE)
