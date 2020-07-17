@@ -42,7 +42,7 @@ def w_read_test():
 
 
 def bank_read():
-    excel_reader = BankExcelReader("doc/dat.xlsx")
+    excel_reader = BankExcelReader("dat.xlsx")
     excel_reader.read()
     excel_reader.write()
 
