@@ -70,9 +70,11 @@ class BankExcelReader():
                 logger.debug("get user:%s", user_id)
                 user = self.__getUser(user_id)
             else:
-                logger.debug("create user:%s", user_id)
-                user = User(user_name, user_id)
-                self.__addUser(user_id, user)
+                if cardType == CardType.CARD_TYPE_CREDIT:
+                    logger.debug("User[%s] Not in Saving Card Sheet Ignore!", user_id)
+                else:
+                    user = User(user_name, user_id)
+                    self.__addUser(user_id, user)
 
             trade_time = row[FIRST_ROW_READ.index(TITLE_TRADE_DATE)].value
             trade_amount = row[FIRST_ROW_READ.index(TITLE_TRADE_AMOUNT)].value
@@ -92,6 +94,7 @@ class BankExcelReader():
         self.__readSheet(credit_card_sheet, CardType.CARD_TYPE_CREDIT)
 
     def read(self):
+        # must read saving card sheet first
         self.__readSavingCard()
         self.__readCreditCard()
 
