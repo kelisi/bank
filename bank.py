@@ -42,9 +42,13 @@ def w_read_test():
 
 
 def bank_read():
-    excel_reader = BankExcelReader("doc/大额、信用卡交易分析.xlsx")
+    logger.debug("============FBI WARING================")
+    excel_reader = BankExcelReader("doc/dat.xlsx")
+    logger.debug("============Reading================")
     excel_reader.read()
+    logger.debug("============Writing================")
     excel_reader.write()
+    logger.debug("============EXIT================")
 
 
 bank_read()

@@ -24,7 +24,7 @@ class SavingCardTradeInfo(TradeInfo):
         self.finger_print = fingerPrint
         # 交易总数
         self.total_amount = totalAmount
-        self.card_type = CARD_TYPE_SAVING
+        self.card_type = CardType.CARD_TYPE_SAVING
         
 class CreditCardTradeInfo(TradeInfo):
     def __init__(self, time, amount, purpose, inOutFlag, transferFlag, storeName, tradeType):
@@ -36,5 +36,5 @@ class CreditCardTradeInfo(TradeInfo):
         # 现金转账标识
         self.flag_transfer = transferFlag
         self.store_name = storeName
-        self.trade_type = tradeT
-        self.card_type = CARD_TYPE_SAVING
+        self.trade_type = tradeType
+        self.card_type = CardType.CARD_TYPE_SAVING

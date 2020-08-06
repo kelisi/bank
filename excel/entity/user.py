@@ -8,15 +8,15 @@ class User(object):
         self.credit_card_trade_info = {}
 
     def __addTradeByTime(self, time, tradeInfoDic, tradeInfo):
-        if time in self.tradeInfoDic:
-            self.tradeInfoDic[time].append(tradeInfo)
+        if time in tradeInfoDic:
+            tradeInfoDic[time].append(tradeInfo)
         else:
-            self.tradeInfoDic[time] = []
-            self.tradeInfoDic[time].append(tradeInfo)
+            tradeInfoDic[time] = []
+            tradeInfoDic[time].append(tradeInfo)
 
     def addSavingCardTradeByTime(self, time, tradeInfo):
         self.__addTradeByTime(time, self.saving_card_trade_info, tradeInfo)
 
     def addCreditCardTradeInfo(self, time, tradeInfo):
-        self.__addTradeByTime(time, self.saving_card_trade_info, tradeInfo)
+        self.__addTradeByTime(time, self.credit_card_trade_info, tradeInfo)
 
