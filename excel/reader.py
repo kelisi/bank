@@ -63,7 +63,7 @@ class BankExcelReader():
         self.user_map[identityId] = user
 
     def __readSheetNew(self, sheet, cardType):
-        
+        pass
     
     def __readSheet(self, sheet, cardType):
         first_row = sheet[1]
@@ -140,17 +140,21 @@ class BankExcelReader():
                 user = self.__getUser(user_id)
             else:
                 logger.warn("user %s not in saving card sheet ignore!!!", user_id)
+                break
                 
-            trade_time = row[first_row.index(TITLE_SAVING_CARD_TRADE_DATE)]
-            trade_amount = row[first_row.index(TITLE_SAVING_CARD_TRADE_AMOUNT)]
-            trade_finger_print = row[first_row.index(TITLE_SAVING_CARD_TRADE_FINGER_PRINT)]
-            trade_purpose = row[first_row.index(TITLE_SAVING_CARD_TRADE_PURPOSE)]
-            trade_total_num = row[first_row.index(TITLE_SAVING_CARD_TRADE_TOTAL_NUM)]
+            trade_time = row[first_row.index(TITLE_CREDIT_CARD_TRADE_DATE)]
+            trade_amount = row[first_row.index(TITLE_CREDIT_CARD_TRADE_AMOUNT)]
+            trade_purpose = row[first_row.index(TITLE_CREDIT_CARD_TRADE_PURPOSE)]
+            trade_flag_in_out = row[first_row.index(TITLE_CREDIT_CARD_FLAG_IN_OR_OUT)]
+            trade_flag_transfer = row[first_row.index(TITLE_CREDIT_CARD_FLAG_TRANSFER)]
+            trade_store_name = row[first_row.index(TITLE_CREDIT_CARD_TRADE_STORE)]
+            trade_type = row[first_row.index(TITLE_CREDIT_CARD_TRADE_TYPE)]
+
+            trade_info = CreditCardTradeInfo(trade_time, trade_amount, trade_purpose,
+                                            trade_flag_in_out,trade_flag_transfer,
+                                            trade_store_name, trade_type)
             
-            trade_info = SavingCardTradeInfo(trade_time, trade_amount, trade_purpose,
-                                              trade_finger_print,trade_total_num)
-            
-            user.addSavingCardTradeByTime(trade_time, trade_info)
+            user.addCreditCardTradeInfo(trade_time, trade_info)
 
     def read(self):
         # must read saving card sheet first
@@ -160,7 +164,14 @@ class BankExcelReader():
         logger.debug("user map:", self.user_map)
 
     def __writeCell(self, sheet, user):
-        for time, trade_list in user.tradeInfoDic.items():
+        for time, trade_list in user.saving_card_trade_info.items():
+            # 信用卡交易中包含同一时间的交易
+            if time in user.credit_card_trade_info:
+                for 
+            else:
+                logger.debug("user:%s have no credit trade on %s", user.identityId, time)
+                break
+
             trade_number = 0
             for i, trade in enumerate(trade_list):
                 trade_number = trade_number + trade.amount
