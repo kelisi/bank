@@ -35,14 +35,14 @@ def w_read_test():
         logger.debug("Sheet :%s", sheet.title)
 
     ws = wb['大额交易']
-
+    
     for row in ws.rows:
         for cell in row:
             print(cell.value)
 
 
 def bank_read():
-    excel_reader = BankExcelReader("dat.xlsx")
+    excel_reader = BankExcelReader("doc/大额、信用卡交易分析.xlsx")
     excel_reader.read()
     excel_reader.write()
 
