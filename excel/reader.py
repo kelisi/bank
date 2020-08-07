@@ -62,6 +62,9 @@ class BankExcelReader():
     def __addUser(self, identityId, user):
         self.user_map[identityId] = user
 
+    def __removeUser(self, id):
+        self.user_map[id] = None
+
     def __readSheetNew(self, sheet, cardType):
         pass
     
@@ -201,5 +204,6 @@ class BankExcelReader():
 
         for user in self.user_map.values():
             self.__writeCell(merge_sheet, user)
+            self.__removeUser(user.identityId)
 
         self.work_book.save(self.file_path)
