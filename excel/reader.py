@@ -40,14 +40,12 @@ FIRST_ROW_WRITE = [TITLE_SAVING_CARD_USER_ID, TITLE_SAVING_CARD_USER_NAME, TITLE
 
 
 class BankExcelReader():
-    file_path = ""
-    # 身份证:User
-    user_map = {}
-
-    def __init__(self, path):
-        logger.debug("read file :%s", path)
-        self.file_path = path
-        self.work_book = load_workbook(path)
+    def __init__(self, filePath, savePath):
+        logger.debug("read file :%s save to: %s", filePath, savePath)
+        self.file_path = filePath
+        self.save_path = savePath
+        self.work_book = load_workbook(filePath, read_only=True)
+        # 身份证:User
         self.user_map = {}
 
     def getSavingCardSheet(self):
@@ -171,7 +169,8 @@ class BankExcelReader():
         # must read saving card sheet first
         self.__readSavingCard()
         self.__readCreditCard()
-
+        # close readonly workbook after read
+        self.work_book.close()
         logger.debug("user map:", self.user_map)
 
     def __writeCell(self, sheet, user):
@@ -195,10 +194,8 @@ class BankExcelReader():
                 break
 
     def write(self):
-        # remove before  create merge sheet
-        if SHEET_MERGE_CREATE in self.work_book.sheetnames:
-            del self.work_book[SHEET_MERGE_CREATE]
-        merge_sheet = self.work_book.create_sheet(SHEET_MERGE_CREATE)
+        save_work_book = Workbook(write_only=True)
+        merge_sheet = save_work_book.create_sheet(SHEET_MERGE_CREATE)
 
         merge_sheet.append(FIRST_ROW_WRITE)
 
@@ -206,4 +203,4 @@ class BankExcelReader():
             self.__writeCell(merge_sheet, user)
             self.__removeUser(user.identityId)
 
-        self.work_book.save(self.file_path)
+        self.work_book.save(self.save_path)
