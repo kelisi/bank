@@ -149,7 +149,7 @@ class BankExcelReader():
                 user = self.__getUser(user_id)
             else:
                 logger.warn("user %s not in saving card sheet ignore!!!", user_id)
-                break
+                continue
                 
             trade_time = row[self.__getRowIndexByValue(first_row, TITLE_CREDIT_CARD_TRADE_DATE)].value
             trade_amount = row[self.__getRowIndexByValue(first_row, TITLE_CREDIT_CARD_TRADE_AMOUNT)].value
