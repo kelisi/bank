@@ -1,4 +1,5 @@
 import logging
+import re
 from openpyxl import Workbook, load_workbook
 from .entity.user import User
 from .entity.tradeinfo import TradeInfo, SavingCardTradeInfo, CreditCardTradeInfo, CardType
@@ -38,6 +39,7 @@ FIRST_ROW_WRITE = [TITLE_SAVING_CARD_USER_ID, TITLE_SAVING_CARD_USER_NAME, TITLE
                    TITLE_CREDIT_CARD_FLAG_IN_OR_OUT, TITLE_CREDIT_CARD_FLAG_TRANSFER, TITLE_CREDIT_CARD_TRADE_AMOUNT, TITLE_CREDIT_CARD_TRADE_PURPOSE,
                    TITLE_CREDIT_CARD_TRADE_STORE, TITLE_CREDIT_CARD_TRADE_TYPE]
 
+RE_USER_ID = re.compile("[^0-9Xx]")
 
 class BankExcelReader():
     def __init__(self, filePath, savePath):
@@ -76,6 +78,7 @@ class BankExcelReader():
         for row in sheet[2:sheet.max_row]:
             user_name = row[FIRST_ROW_READ.index(TITLE_USER_NAME)].value
             user_id = row[FIRST_ROW_READ.index(TITLE_USER_ID)].value
+            user_id = RE_USER_ID.sub("", user_id)
             user = None
 
             if user_id in self.user_map:
@@ -113,6 +116,7 @@ class BankExcelReader():
 
             user_name = row[self.__getRowIndexByValue(first_row, TITLE_SAVING_CARD_USER_NAME)].value
             user_id = row[self.__getRowIndexByValue(first_row, TITLE_SAVING_CARD_USER_ID)].value
+            user_id = RE_USER_ID.sub("", user_id)
             user_no = row[self.__getRowIndexByValue(first_row, TITLE_SAVING_CARD_USER_NO)].value
             
             if user_id in self.user_map:
@@ -142,7 +146,7 @@ class BankExcelReader():
             user = None
 
             user_id = row[self.__getRowIndexByValue(first_row, TITLE_CREDIT_CARD_USER_ID)].value
-            
+            user_id = RE_USER_ID.sub("", user_id)
             # 信用卡交易用户必须出现在大额交易中时才进行统计
             if user_id in self.user_map:
                 logger.debug("get user:%s", user_id)
@@ -191,7 +195,7 @@ class BankExcelReader():
 
             else:
                 logger.debug("user:%s have no credit trade on %s", user.identityId, time)
-                break
+                continue
 
     def write(self):
         save_work_book = Workbook(write_only=True)
